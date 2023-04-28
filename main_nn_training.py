@@ -2,7 +2,6 @@ import pickle
 
 import mediapipe as mp
 from keras import Sequential
-from keras.applications import DenseNet121, MobileNetV2
 from keras.callbacks import LearningRateScheduler
 from keras.layers import (GRU, LSTM, Activation, BatchNormalization,
                           Bidirectional, Dense, Dropout)
@@ -43,25 +42,6 @@ model.add(Activation("relu"))
 model.add(Dense(classes, activation="softmax"))
 model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
 model.summary()
-# model = DenseNet121(
-#     include_top=True,
-#     weights=None,
-#     input_tensor=None,
-#     input_shape=(max_len, feature_len, 3),
-#     pooling=None,
-#     classes=classes,
-#     classifier_activation="softmax",
-# )
-# model = MobileNetV2(
-#     alpha=1.0,
-#     include_top=False,
-#     weights=None,
-#     input_tensor=None,
-#     pooling=None,
-#     classes=classes,
-#     classifier_activation="softmax",
-# )
-# model.summary()
 
 LRScheduler = LearningRateScheduler(lrSchedule)
 callbacks_list = [LRScheduler]

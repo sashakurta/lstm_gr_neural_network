@@ -1,9 +1,12 @@
 import json
 import math
+from pathlib import Path
 
+import keras
 import numpy as np
 import pandas as pd
 from google.protobuf.json_format import MessageToJson
+from keras.utils import pad_sequences
 
 
 def distance_between(results, p1_loc, p2_loc):
@@ -85,3 +88,16 @@ def frame_to_timecode(start_frame: int, finish_frame: int) -> str:
     add_to_start = 1 if start_frame - start_seconds * 30 > 15 else 0
     add_to_finish = 1 if finish_frame - finish_seconds * 30 > 15 else 0
     return (start_minute, start_seconds % 60 + add_to_start), (finish_minute, finish_seconds % 60 + add_to_finish)
+
+
+def load_model(path="educated_model_with_bidirectional"):
+    MODEL_NAME = Path(path)
+    return keras.models.load_model(MODEL_NAME)
+
+
+def predict_gesture(model, landmark_npy_all):
+    new_lmk_array = skip_frame([landmark_npy_all])
+    train_x = pad_sequences(new_lmk_array, padding="post", maxlen=50, dtype="float32")
+    y_prediction = model.predict(train_x)
+    return np.argmax(y_prediction, axis=1)
+
